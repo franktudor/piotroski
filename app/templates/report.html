@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report for {{ report.ticker }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { margin-bottom: 1.5rem; }
+        .score-card { text-align: center; }
+        .score-value { font-size: 2.5rem; font-weight: bold; }
+        .score-label { font-size: 1rem; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Report for {{ report.company.name }} ({{ report.ticker }})</h1>
+            <a href="/report/{{ report.ticker }}.pdf" class="btn btn-primary">Download PDF</a>
+        </div>
+        <p class="text-muted">As of: {{ report.asOf }}</p>
+
+        <!-- Scores -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card score-card">
+                    <div class="card-body">
+                        <div class="score-value">{{ report.scores.piotroskiF }}</div>
+                        <div class="score-label">Piotroski F-Score</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card score-card">
+                    <div class="card-body">
+                        <div class="score-value">{{ report.scores.valueInvestor }}</div>
+                        <div class="score-label">Value Investor Score</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card score-card">
+                    <div class="card-body">
+                        <div class="score-value">{{ report.scores.growthInvestor }}</div>
+                        <div class="score-label">Growth Investor Score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Company Info and Summaries -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Company Bio</div>
+                    <div class="card-body">
+                        <p>{{ report.explain.piotroski }}</p>
+                        <a href="{{ report.company.homepage }}" target="_blank">Visit Homepage</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">"Cash Cow" Summary</div>
+                    <div class="card-body">
+                        <p>{{ report.explain.cashCow | safe }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fundamentals -->
+        <div class="card">
+            <div class="card-header">Key Fundamentals & Ratios (TTM)</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr><th>Revenue</th><td>${{ "{:,.2f}".format(report.fundamentals.ttm.revenue) }}</td></tr>
+                        <tr><th>Net Income</th><td>${{ "{:,.2f}".format(report.fundamentals.ttm.netIncome) }}</td></tr>
+                        <tr><th>Operating Cash Flow</th><td>${{ "{:,.2f}".format(report.fundamentals.ttm.operatingCashFlow) }}</td></tr>
+                        <tr><th>Free Cash Flow</th><td>${{ "{:,.2f}".format(report.fundamentals.ttm.freeCashFlow) }}</td></tr>
+                        <tr><th>P/E Ratio</th><td>{{ "%.2f"|format(report.fundamentals.ratios.pe) }}</td></tr>
+                        <tr><th>P/B Ratio</th><td>{{ "%.2f"|format(report.fundamentals.ratios.pb) }}</td></tr>
+                        <tr><th>FCF Yield</th><td>{{ "%.2f"|format(report.fundamentals.ratios.fcfYield) }}%</td></tr>
+                        <tr><th>ROA</th><td>{{ "%.2f"|format(report.fundamentals.ratios.roa * 100) }}%</td></tr>
+                        <tr><th>ROE</th><td>{{ "%.2f"|format(report.fundamentals.ratios.roe * 100) }}%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- News -->
+        <div class="card">
+            <div class="card-header">Recent News</div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for item in report.news %}
+                    <li class="list-group-item">
+                        <a href="{{ item.url }}" target="_blank">{{ item.title }}</a>
+                        <small class="text-muted d-block">{{ item.source }} - {{ item.publishedAt }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

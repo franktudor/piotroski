@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report for {{ report.ticker }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        body {
+            font-family: sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+        h1, h2, h3 {
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        h1 { font-size: 24pt; }
+        h2 { font-size: 16pt; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 1.5em; }
+        .header {
+            text-align: left;
+            margin-bottom: 2em;
+        }
+        .header p {
+            margin: 0;
+            color: #555;
+        }
+        .scores {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin: 2em 0;
+            padding: 1em;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .score-item .value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .score-item .label {
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .section {
+            margin-top: 1.5em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .news-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .news-list li {
+            border-bottom: 1px solid #eee;
+            padding: 0.5em 0;
+        }
+        .news-list a::after {
+            content: " (" attr(href) ")";
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ report.company.name }} ({{ report.ticker }})</h1>
+        <p>Financial Report</p>
+        <p>As of: {{ report.asOf }}</p>
+    </div>
+
+    <div class="scores">
+        <div class="score-item">
+            <div class="value">{{ report.scores.piotroskiF }}</div>
+            <div class="label">Piotroski F-Score</div>
+        </div>
+        <div class="score-item">
+            <div class="value">{{ report.scores.valueInvestor }}</div>
+            <div class="label">Value Score</div>
+        </div>
+        <div class="score-item">
+            <div class="value">{{ report.scores.growthInvestor }}</div>
+            <div class="label">Growth Score</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Company Bio</h2>
+        <p>{{ report.explain.piotroski }}</p>
+    </div>
+
+    <div class="section">
+        <h2>"Cash Cow" Summary</h2>
+        <p>{{ report.explain.cashCow | safe }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Key Fundamentals & Ratios (TTM)</h2>
+        <table>
+            <tbody>
+                <tr><th>Revenue</th><td>${{ "{:,.0f}".format(report.fundamentals.ttm.revenue) }}</td></tr>
+                <tr><th>Net Income</th><td>${{ "{:,.0f}".format(report.fundamentals.ttm.netIncome) }}</td></tr>
+                <tr><th>Operating Cash Flow</th><td>${{ "{:,.0f}".format(report.fundamentals.ttm.operatingCashFlow) }}</td></tr>
+                <tr><th>Free Cash Flow</th><td>${{ "{:,.0f}".format(report.fundamentals.ttm.freeCashFlow) }}</td></tr>
+                <tr><th>P/E Ratio</th><td>{{ "%.2f"|format(report.fundamentals.ratios.pe) }}</td></tr>
+                <tr><th>P/B Ratio</th><td>{{ "%.2f"|format(report.fundamentals.ratios.pb) }}</td></tr>
+                <tr><th>FCF Yield</th><td>{{ "%.2f"|format(report.fundamentals.ratios.fcfYield) }}%</td></tr>
+                <tr><th>ROA</th><td>{{ "%.2f"|format(report.fundamentals.ratios.roa * 100) }}%</td></tr>
+                <tr><th>ROE</th><td>{{ "%.2f"|format(report.fundamentals.ratios.roe * 100) }}%</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Recent News</h2>
+        <ul class="news-list">
+            {% for item in report.news %}
+            <li>
+                <strong>{{ item.title }}</strong><br>
+                <small>{{ item.source }} - {{ item.publishedAt }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
