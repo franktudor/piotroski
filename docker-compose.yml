@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=production
+      - DATA_PROVIDER=fmp
+      - FMP_API_KEY=${FMP_API_KEY} # Should be set in a .env file
+      - OLLAMA_HOST=http://ollama:11434
+      - CACHE_URL=redis://redis:6379/0
+      - NEWS_SOURCES=reuters,ap
+      - MODEL_NAME=llama3
+      - SECTOR_NORMALIZATION=true
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - ollama
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  ollama:
+    image: "ollama/ollama"
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:
