@@ -1,7 +1,7 @@
 from crewai import Agent
 
 class WriterAgent(Agent):
-    def __init__(self):
+    def __init__(self, llm):
         super().__init__(
             role="Financial Content Writer",
             goal="Generate clear, concise, and neutral-toned financial summaries.",
@@ -11,6 +11,7 @@ class WriterAgent(Agent):
                 "company biographies and summarizing financial strengths, such as "
                 "cash flow, ensuring the tone is always objective and informative."
             ),
+            llm=llm,
             allow_delegation=False,
             verbose=True
         )

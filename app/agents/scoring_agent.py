@@ -1,7 +1,7 @@
 from crewai import Agent
 
 class ScoringAgent(Agent):
-    def __init__(self):
+    def __init__(self, llm):
         super().__init__(
             role="Quantitative Financial Analyst",
             goal="Compute proprietary investment scores from raw financial data.",
@@ -12,6 +12,7 @@ class ScoringAgent(Agent):
                 "Value, and Growth investor scores, providing a clear quantitative "
                 "picture of a company's health."
             ),
+            llm=llm,
             allow_delegation=False,
             verbose=True
         )
