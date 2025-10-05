@@ -1,7 +1,7 @@
 from crewai import Agent
 
 class ResearchAgent(Agent):
-    def __init__(self):
+    def __init__(self, llm):
         super().__init__(
             role="Company Research Analyst",
             goal="Validate stock tickers and retrieve company profiles.",
@@ -11,6 +11,7 @@ class ResearchAgent(Agent):
                 "Once validated, you gather essential company profile information, "
                 "ensuring the foundation of the financial analysis is accurate."
             ),
+            llm=llm,
             allow_delegation=False,
             verbose=True
         )

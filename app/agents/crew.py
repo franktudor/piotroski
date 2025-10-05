@@ -3,14 +3,16 @@ from app.agents.research_agent import ResearchAgent
 from app.agents.data_agent import DataAgent
 from app.agents.scoring_agent import ScoringAgent
 from app.agents.writer_agent import WriterAgent
+from ollama_llm import OllamaLLM
 
 class TickerCrew:
     def __init__(self, ticker: str):
         self.ticker = ticker
-        self.research_agent = ResearchAgent()
-        self.data_agent = DataAgent()
-        self.scoring_agent = ScoringAgent()
-        self.writer_agent = WriterAgent()
+        llm = OllamaLLM()
+        self.research_agent = ResearchAgent(llm=llm)
+        self.data_agent = DataAgent(llm=llm)
+        self.scoring_agent = ScoringAgent(llm=llm)
+        self.writer_agent = WriterAgent(llm=llm)
 
     def run(self):
         # Define tasks for each agent.
